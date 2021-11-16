@@ -16,17 +16,12 @@ app.use(express.static(path.join(__dirname + '/public')));
 
 const sess = {
     secret: process.env.SECRET,
-    cookie: {
-      maxAge: 900000,
-      httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
-    },
+    cookie: {},
     resave: false,
     saveUninitialized: true,
     store: new SequelizeStore({
       db: sequelize,
-    }),
+    })
   };
 
 app.use(session(sess));
