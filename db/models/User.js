@@ -3,8 +3,8 @@ const bcrypt = require('bcrypt');
 const sequelize = require('../connection.js');
 
 class User extends Model {
-  validatePassword(password) {
-    return bcrypt.compare(password, this.password);
+  checkPassword(loginPw) {
+    return bcrypt.compareSync(loginPw, this.password);
   }
 }
 
@@ -23,11 +23,23 @@ User.init(
   { sequelize, modelName: 'user', freezeTableName: true, timestamps: false }
 );
 
-User.beforeCreate(async (user) => {
-  const hashedPassword = await bcrypt.hash(user.password, 10).catch((err) => {
-    console.error(err);
-  });
-  user.password = hashedPassword;
+hooks: {
+  beforeCreate(async (newUserData) => {
+    newUserData.password = await bcrypt.hash(newUserData.password, 10);
+    return newUserData;
+    });
+    beforeUpdate: async (updatedUserData) => {
+      updatedUserData.password = await bcrypt.hash(updatedUserData.password, 10);
+      return updatedUserData;
+    },
+  },
+  sequelize,
+  timestamps: false,
+  freezeTableName: true,
+  underscored: true,
+  modelName: 'user',
 });
+
+
 
 module.exports = User;
