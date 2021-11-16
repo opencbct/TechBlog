@@ -1,9 +1,10 @@
-const Post = require('./Post.js');
-const User = require('./User.js');
-const Comment = require('./Comment.js');
+const Post = require('./Post');
+const User = require('./User');
+const Comment = require('./Comment');
 
 User.hasMany(Post, {
   foreignKey: 'user_id',
+  onDelete: 'CASCADE'
 });
 
 User.hasMany(Comment, {
